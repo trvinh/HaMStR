@@ -82,13 +82,13 @@ def runBlast(args):
 
 
 def main():
-    version = '1.0.2'
-    parser = argparse.ArgumentParser(description='You are running addTaxonHamstr version ' + str(version) + '.')
+    version = '1.1.0'
+    parser = argparse.ArgumentParser(description='You are running addTaxon1s version ' + str(version) + '.')
     required = parser.add_argument_group('required arguments')
     optional = parser.add_argument_group('optional arguments')
     required.add_argument('-f', '--fasta', help='FASTA file of input taxon', action='store', default='', required=True)
     required.add_argument('-i', '--taxid', help='Taxonomy ID of input taxon', action='store', default='', required=True, type=int)
-    required.add_argument('-o', '--outPath', help='Path to output directory', action='store', default='', required=True)
+    optional.add_argument('-o', '--outPath', help='Path to output directory', action='store', default='')
     optional.add_argument('-n', '--name', help='Acronym name of input taxon', action='store', default='', type=str)
     optional.add_argument('-v', '--verProt', help='Proteome version', action='store', default=1, type=int)
     optional.add_argument('-c', '--coreTaxa', help='Include this taxon to core taxa (i.e. taxa in blast_dir folder)', action='store_true', default=False)
@@ -105,7 +105,15 @@ def main():
     faIn = args.fasta
     name = args.name.upper()
     taxId = str(args.taxid)
-    outPath = str(Path(args.outPath).resolve())
+    # outPath = str(Path(args.outPath).resolve())
+    outPath = args.outPath #str(Path(args.outPath).resolve())
+    if outPath == '':
+        oneseqPath = os.path.realpath(__file__).replace('/addTaxon1s.py','')
+        pathconfigFile = oneseqPath + '/bin/pathconfig.txt'
+        if not os.path.exists(pathconfigFile):
+            sys.exit('No pathconfig.txt found. Please run setup1s (https://github.com/BIONF/HaMStR/wiki/Installation#setup-hamstr-oneseq).')
+        with open(pathconfigFile) as f:
+            outPath = f.readline().strip()
     noAnno = args.noAnno
     coreTaxa = args.coreTaxa
     ver = str(args.verProt)
@@ -136,16 +144,26 @@ def main():
     if (not os.path.exists(os.path.abspath(specFile))) or (os.stat(specFile).st_size == 0) or force:
         f = open(specFile, 'w')
         index = 0
+        modIdIndex = 0
+        longId = 'no'
         tmpDict = {}
         for id in inSeq:
+            seq = str(inSeq[id].seq)
+            # check ID
+            id = re.sub('\|', '_', id)
+            if len(id) > 80:
+                # modIdIndex = modIdIndex + 1
+                # id = specName + "_" + str(modIdIndex)
+                longId = 'yes'
             if not id in tmpDict:
                 tmpDict[id] = 1
             else:
                 index = index + 1
                 id = str(id) + '_' + str(index)
                 tmpDict[id] = 1
-            id = re.sub('\|', '_', id)
-            seq = str(inSeq[id].seq)
+            # check seq
+            if seq[-1] == '*':
+                seq = seq[:-1]
             specialChr = 'no'
             if any(c for c in seq if not c.isalpha()):
                 specialChr = 'yes'
@@ -163,6 +181,8 @@ def main():
         cf = open(specFile+'.checked', 'w')
         cf.write(str(datetime.now()))
         cf.close()
+        # warning about long header
+        print('\033[91mWARNING: Headers are longer than 80 characters. It could cause some troubles!\033[0m')
     else:
         print(genomePath + '/' + specName + '.fa already exists!')
 
@@ -192,7 +212,7 @@ def main():
         except:
             print('\033[91mProblem with running annoFAS. You can check it with this command:\n%s\033[0m' % annoCmd)
 
-    print('Output can be found in %s within genome_dir [and blast_dir, weight_dir] folder[s]' % outPath)
+    print('Output for %s can be found in %s within genome_dir [and blast_dir, weight_dir] folder[s]' % (specName, outPath))
 
 if __name__ == '__main__':
     main()

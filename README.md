@@ -1,12 +1,10 @@
 # HaMStR-OneSeq
-[![PyPI version](https://badge.fury.io/py/hamstr1s.svg)](https://badge.fury.io/py/hamstr1s)
-[![conda-install](https://anaconda.org/bionf/hamstr/badges/installer/conda.svg)](https://anaconda.org/bionf/hamstr)
-[![conda-version](https://anaconda.org/bionf/hamstr/badges/version.svg)](https://anaconda.org/bionf/hamstr)
-[![GPLv3-license](https://anaconda.org/bionf/hamstr/badges/license.svg)](https://www.gnu.org/licenses/gpl-3.0.de.html)
+[![PyPI version](https://badge.fury.io/py/h1s.svg)](https://badge.fury.io/py/h1s)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
 # Table of Contents
 * [How to install](#how-to-install)
-     * [Install the hamstr1s package](#install-the-hamstr1s-package)
+     * [Install the h1s package](#install-the-h1s-package)
      * [Setup HaMStR-oneSeq](#setup-hamstr-oneseq)
 * [Usage](#usage)
 * [HaMStR-oneSeq data set](#hamstr-oneseq-data-set)
@@ -19,17 +17,17 @@
 
 # How to install
 
-*HaMStR-oneSeq* is distributed as a python package called *hamstr1s*. It is compatible with [Python ≥ v3.7](https://www.python.org/downloads/).
+*HaMStR-oneSeq* is distributed as a python package called *h1s*. It is compatible with [Python ≥ v3.7](https://www.python.org/downloads/).
 
-## Install the hamstr1s package
-You can install *hamstr1s* using `pip`:
+## Install the h1s package
+You can install *h1s* using `pip`:
 ```
-python3 -m pip install hamstr1s
+python3 -m pip install h1s
 ```
 
 or, in case you do not have admin rights, and don't use package systems like Anaconda to manage environments you need to use the `--user` option:
 ```
-python3 -m pip install --user hamstr1s
+python3 -m pip install --user h1s
 ```
 
 and then add the following line to the end of your **~/.bashrc** or **~/.bash_profile** file, restart the current terminal to apply the change (or type `source ~/.bashrc`):
@@ -40,20 +38,20 @@ export PATH=$HOME/.local/bin:$PATH
 
 ## Setup HaMStR-oneSeq
 
-After installing *hamstr1s*, you need to setup *HaMStR-oneSeq* to get its dependencies and pre-calculated data.
+After installing *h1s*, you need to setup *HaMStR-oneSeq* to get its dependencies and pre-calculated data.
 
 You can do it by just running this command
 ```
-setup1s
+setup1s -o /output/path/for/oneSeq/data
 ```
 or, in case you are using Anaconda
 ```
-setup1s --conda
+setup1s -o /output/path/for/oneSeq/data --conda
 ```
 
 *You should have the sudo password ready, otherwise some missing dependencies cannot be installed. See [dependency list](#dependencies) for more info. If you do not have root privileges, ask your admin to install those dependencies using `setup1s --lib` command.*
 
-After the setup run successfully, you can start using HaMStR.
+[Pre-calculated data set](https://github.com/BIONF/HaMStR/wiki/Input-and-Output-Files#data-structure) of HaMStR-oneSeq will be saved in `/output/path/for/oneSeq/data`. After the setup run successfully, you can start using *HaMStR-oneSeq*.
 
 *For debugging the setup, please create a log file by running the setup as e.g. `setup1s | tee log.txt` for Linux/MacOS or `setup1s --conda | tee log.txt` for Anaconda and send us that log file, so that we can trouble shoot the issues. Most of the problems can be solved by just re-running the setup.*
 
@@ -86,15 +84,15 @@ HaMStR-oneSeq is not limited to those 78 taxa. If needed the user can manually a
 ## Adding a new gene set into HaMStR-oneSeq
 For adding **one gene set**, please use the `addTaxon1s` function:
 ```
-addTaxon1s -f newTaxon.fa -i tax_id -o /output/directory [-n abbr_tax_name] [-c] [-v protein_version] [-a]
+addTaxon1s -f newTaxon.fa -i tax_id [-o /output/directory] [-n abbr_tax_name] [-c] [-v protein_version] [-a]
 ```
 
-in which, the first 3 arguments are required including `newTaxon.fa` is the gene set that need to be added, `tax_id` is its NCBI taxonomy ID, `/output/directory` is where the sub-directories can be found (*genome_dir*, *blast_dir* and *weight_dir*). Other arguments are optional, which are `-n` for specify your own taxon name (if not given, an abbriviate name will be suggested based on the NCBI taxon name of the input `tax_id`), `-c` for calculating the BLAST DB (only needed if you need to include your new taxon into the list of taxa for compilating the core set), `-v` for identifying the genome/proteome version (default will be 1), and `-a` for turning off the annotation step (*not recommended*).
+in which, the first 3 arguments are required including `newTaxon.fa` is the gene set that need to be added, `tax_id` is its NCBI taxonomy ID, `/output/directory` is where the sub-directories can be found (*genome_dir*, *blast_dir* and *weight_dir*). If not given, new taxon will be added into the same directory of pre-calculated data. Other arguments are optional, which are `-n` for specify your own taxon name (if not given, an abbriviate name will be suggested based on the NCBI taxon name of the input `tax_id`), `-c` for calculating the BLAST DB (only needed if you need to include your new taxon into the list of taxa for compilating the core set), `-v` for identifying the genome/proteome version (default will be 1), and `-a` for turning off the annotation step (*not recommended*).
 
 ## Adding a list of gene sets into HaMStR-oneSeq
 For adding **more than one gene set**, please use the `addTaxa1s` script:
 ```
-addTaxa1s -i /path/to/newtaxa/fasta -m mapping_file -o /output/directory [-c]
+addTaxa1s -i /path/to/newtaxa/fasta -m mapping_file [-o /output/directory] [-c]
 ```
 in which, `/path/to/taxa/fasta` is a folder where the FASTA files of all new taxa can be found. `mapping_file` is a tab-delimited text file, where you provide the taxonomy IDs that stick with the FASTA files:
 

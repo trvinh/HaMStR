@@ -25,8 +25,8 @@ with open("README.md", "r") as input:
     long_description = input.read()
 
 setup(
-    name="hamstr1s",
-    version="2.0.0",
+    name="h1s",
+    version="2.1.2",
     python_requires='>=3.7.0',
     description="Feature-aware orthology prediction tool",
     long_description=long_description,
@@ -44,12 +44,13 @@ setup(
         'greedyFAS'
     ],
     entry_points={
-        'console_scripts': ["oneSeq = hamstr1s.runOneseq:main",
-                            "setup1s = hamstr1s.setupOneseq:main",
-                            "checkData1s = hamstr1s.checkDataHamstr:main",
-                            "addTaxon1s = hamstr1s.addTaxonHamstr:main",
-                            "addTaxa1s = hamstr1s.addTaxaHamstr:main",
-                            "merge1sOutput = hamstr1s.mergePhyloprofileData:main"],
+        'console_scripts': ["h1s = h1s.runOneseq:main",
+                            "setup1s = h1s.setup1s:main",
+                            "checkData1s = h1s.checkData1s:main",
+                            "addTaxon1s = h1s.addTaxon1s:main",
+                            "addTaxa1s = h1s.addTaxa1s:main",
+                            "merge1sOutput = h1s.merge1sOutput:main",
+                            "remove1s = h1s.remove1s:main"],
     },
     license="GPL-3.0",
     classifiers=[
